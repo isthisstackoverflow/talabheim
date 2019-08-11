@@ -1,1 +1,1 @@
-console.log("this is nice")
+console.log('this is nice')

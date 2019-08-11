@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+  - "node"
+cache:
+  directories:
+  - node_modules
+script:
+  - npm run lint
+  - npm run build
+deploy:
+  provider: pages
+  local_dir: ./dist
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  on:
+    branch: master
+notifications:
+  email:
+    recipients:
+      - superfastblitzmann@gmail.com
+    on_success: change
+    on_failure: always

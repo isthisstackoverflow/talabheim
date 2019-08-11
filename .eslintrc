@@ -1,11 +1,5 @@
 {
   "extends": [
-    "standard",
-    "plugin:react/recommended"
-  ],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
-  }
+    "standard"
+  ]
 }

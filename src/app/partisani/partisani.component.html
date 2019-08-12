@@ -1,1 +1,52 @@
-<p>partisani works!</p>
+<table mat-table
+  [dataSource]="dataSource" multiTemplateDataRows
+  class="mat-elevation-z8"
+>
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column | uppercase}} </th>
+    <td mat-cell *matCellDef="let element">
+      {{element[column]}}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="Name" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Klasse</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let k of Klasse" [value]="k">
+              {{k}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Status</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let s of status" [value]="s">
+              {{s}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <textarea matInput placeholder="Notiz"></textarea>
+        </mat-form-field>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay;"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element"
+  >
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
+
+<button mat-raised-button class="spaced" color="primary" matTooltip="Neuen Partisanen erstellen">
+  <mat-icon>person_add</mat-icon>
+  Hinzufügen
+</button>

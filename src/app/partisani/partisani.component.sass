@@ -1,40 +1,38 @@
 table
-  width: 100%
+  width: calc(100% - 2em)
+  margin: 1em
+  table-layout: fixed
 
-tr.example-detail-row
-  height: 0
-
-tr.example-element-row:not(.example-expanded-row):hover
-  background: #777
-
-tr.example-element-row:not(.example-expanded-row):active
-  background: #efefef
+th, td
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
 
 .spaced
-  margin: 1em
+  margin: 1em 0 0 1em
 
-.example-element-row td
+tr.partisan-detail-row
+  height: 0
+
+tr.partisan-row:not(.partisan-expanded-row):hover
+  background: #777
+
+tr.partisan-row:not(.partisan-expanded-row):active
+  background: #efefef
+
+.partisan-row td
   border-bottom-width: 0
 
-.example-element-detail
+.partisan-detail
   overflow: hidden
   display: flex
+  flex-wrap: wrap
+  flex-direction: row
+  justify-content: space-around
 
-.example-element-diagram
-  min-width: 80px
-  border: 2px solid black
-  padding: 8px
-  font-weight: lighter
-  margin: 8px 0
-  height: 104px
+.partisan-detail-child
+  flex: 1 0 30%
+  margin: 0.5em
 
-.example-element-symbol
-  font-weight: bold
-  font-size: 40px
-  line-height: normal
-
-.example-element-description
-  padding: 16px
-
-.example-element-description-attribution
-  opacity: 0.5
+.partisan-detail-child-full
+  flex: 1 0 100%

@@ -1,52 +1,70 @@
-<table mat-table
-  [dataSource]="dataSource" multiTemplateDataRows
+<button
+  mat-raised-button
+  class="spaced"
+  color="primary"
+  matTooltip="Neuen Partisanen erstellen"
+  (click)="storeService.addPartisan()"
+>
+  <mat-icon>person_add</mat-icon>
+  Hinzufügen
+</button>
+
+<table
+  mat-table
+  multiTemplateDataRows
+  [dataSource]="storeService.state.partisani"
   class="mat-elevation-z8"
 >
   <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-    <th mat-header-cell *matHeaderCellDef> {{column | uppercase}} </th>
+    <th mat-header-cell *matHeaderCellDef>{{columnToTitle[column] | uppercase}}</th>
     <td mat-cell *matCellDef="let element">
       {{element[column]}}
     </td>
   </ng-container>
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-      <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Name" />
+      <div class="partisan-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <mat-form-field class="partisan-detail-child">
+          <input matInput placeholder="Name" [(ngModel)]="element.name"/>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field class="partisan-detail-child">
           <mat-label>Klasse</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let k of Klasse" [value]="k">
-              {{k}}
+          <mat-select [(ngModel)]="element.class">
+            <mat-option *ngFor="let c of keys(class)" [value]="class[c]">
+              {{class[c]}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field class="partisan-detail-child">
           <mat-label>Status</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let s of status" [value]="s">
-              {{s}}
+          <mat-select [(ngModel)]="element.status">
+            <mat-option *ngFor="let s of keys(status)" [value]="status[s]">
+              {{status[s]}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="example-full-width">
-          <textarea matInput placeholder="Notiz"></textarea>
+        <mat-form-field class="partisan-detail-child">
+          <textarea matInput placeholder="Anmerkungen" rows="5" [(ngModel)]="element.note"></textarea>
         </mat-form-field>
+        <button
+          mat-raised-button
+          class="spaced"
+          color="warn"
+          matTooltip="Partisanen permanent löschen"
+          (click)="storeService.removePartisan(element)"
+        >
+          <mat-icon>delete_forever</mat-icon>
+          Permanent löschen
+        </button>
       </div>
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="columnsToDisplay;"></tr>
   <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
-      class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element"
+      class="partisan-row"
+      [class.partisan-expanded-row]="expandedElement === element"
       (click)="expandedElement = expandedElement === element ? null : element"
   >
   </tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="partisan-detail-row"></tr>
 </table>
-
-<button mat-raised-button class="spaced" color="primary" matTooltip="Neuen Partisanen erstellen">
-  <mat-icon>person_add</mat-icon>
-  Hinzufügen
-</button>

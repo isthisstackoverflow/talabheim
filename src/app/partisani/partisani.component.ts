@@ -1,21 +1,8 @@
 import {Component} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
+import {StoreService} from '../store.service';
 import {Partisan, Class, Status} from '../app.definitions';
-
-const PARTISAN_DATA: Partisan[] = [
-  {
-    name: 'Hans',
-    note: 'dude that x',
-    class: Class.Militia,
-    status: Status.Healthy
-  }, {
-    name: 'Hanzo',
-    note: 'asdf',
-    class: Class.Militia,
-    status: Status.Healthy
-  },
-];
 
 @Component({
   selector: 'app-partisani',
@@ -30,9 +17,17 @@ const PARTISAN_DATA: Partisan[] = [
   ],
 })
 export class PartisaniComponent {
-  dataSource = PARTISAN_DATA;
-  columnsToDisplay = ['name', 'class', 'status'];
+  class = Class;
+  status = Status;
+  keys = Object.keys;
+  columnsToDisplay = ['name', 'class', 'status', 'note'];
+  columnToTitle = {
+    name: 'Name',
+    class: 'Klasse',
+    status: 'Status',
+    note: 'Anmerkungen'
+  };
   expandedElement: Partisan | null;
-  class: Class;
-  status: Status;
+
+  constructor(public storeService: StoreService) {}
 }

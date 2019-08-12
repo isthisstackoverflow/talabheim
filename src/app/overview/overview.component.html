@@ -1,17 +1,21 @@
 <div class="bar">
-  <div matTooltip="Tag">
+  <div matTooltip="Tag" class="element">
+    <button mat-icon-button (click)="storeService.removeDay()">-</button>
     <mat-icon>calendar_today</mat-icon>
-    14
+    {{storeService.state.day}}
+    <button mat-icon-button (click)="storeService.addDay()">+</button>
   </div>
-  <div matTooltip="Partisanen">
-    <mat-icon>people_outline</mat-icon>
-    33
-  </div>
-  <div matTooltip="Vorräte">
+  <div matTooltip="Vorräte" class="element">
+    <button mat-icon-button (click)="storeService.removeStock()">-</button>
     <mat-icon>fastfood</mat-icon>
-    12
+    {{storeService.state.stock}}
+    <button mat-icon-button (click)="storeService.addStock()">+</button>
   </div>
-  <button mat-raised-button color="primary" matTooltip="Tag beenden">
+  <div matTooltip="Partisanen" class="element">
+    <mat-icon>people_outline</mat-icon>
+    {{storeService.state.partisani.length}}
+  </div>
+  <button mat-raised-button color="primary" matTooltip="Tag beenden" (click)="storeService.nextDay()">
     <mat-icon>access_time</mat-icon>
     Nächster Tag
   </button>

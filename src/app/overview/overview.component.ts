@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { StoreService } from '../store.service';
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.sass']
 })
-export class OverviewComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class OverviewComponent {
+  constructor(public storeService: StoreService) {}
 }

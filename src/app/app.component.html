@@ -1,8 +1,18 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    {{ title }}
-  </h1>
-</div>
+<mat-toolbar color="basic">
+  <h1>{{ title }}</h1>
+  <span class="spacer"></span>
+  <app-state-buttons></app-state-buttons>
+</mat-toolbar>
 
-<router-outlet></router-outlet>
+<mat-divider></mat-divider>
+
+<app-overview></app-overview>
+
+<mat-divider></mat-divider>
+
+<mat-tab-group mat-stretch-tabs>
+  <mat-tab label="Partisanen"><app-partisani></app-partisani></mat-tab>
+  <mat-tab label="Einsätze"><app-mission></app-mission></mat-tab>
+  <mat-tab label="Editor"><app-editor></app-editor></mat-tab>
+  <mat-tab label="Raw Editor"><app-raw-editor></app-raw-editor></mat-tab>
+</mat-tab-group>

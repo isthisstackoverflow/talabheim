@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "partisanenverwaltung": {
+    "talabheim": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/partisanenverwaltung",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -67,18 +67,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "partisanenverwaltung:build"
+            "browserTarget": "talabheim:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "partisanenverwaltung:build:production"
+              "browserTarget": "talabheim:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "partisanenverwaltung:build"
+            "browserTarget": "talabheim:build"
           }
         },
         "lint": {
@@ -96,15 +96,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "partisanenverwaltung:serve"
+            "devServerTarget": "talabheim:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "partisanenverwaltung:serve:production"
+              "devServerTarget": "talabheim:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "partisanenverwaltung"
+  "defaultProject": "talabheim"
 }

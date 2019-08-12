@@ -1,37 +1,60 @@
 {
   "name": "talabheim",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Custom Warhammer Fantasy Ruleset support tool",
   "scripts": {
-    "clean": "rimraf dist && rimraf .cache",
-    "build": "rimraf dist && parcel build src/index.html --public-url .",
-    "dev": "rimraf dist && parcel src/index.html",
-    "start": "npm run dev",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "lint": "ng lint"
   },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/isthisstackoverflow/talabheim.git"
   },
+  "bugs": {
+    "url": "https://github.com/isthisstackoverflow/talabheim/issues"
+  },
+  "homepage": "https://github.com/isthisstackoverflow/talabheim#readme",
   "keywords": [
     "warhammer fantasy",
     "custom tool"
   ],
   "author": "Sen <superfastblitzmann@gmail.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/isthisstackoverflow/talabheim/issues"
+  "dependencies": {
+    "@angular/animations": "~8.2.0",
+    "@angular/common": "~8.2.0",
+    "@angular/compiler": "~8.2.0",
+    "@angular/core": "~8.2.0",
+    "@angular/forms": "~8.2.0",
+    "@angular/platform-browser": "~8.2.0",
+    "@angular/platform-browser-dynamic": "~8.2.0",
+    "@angular/router": "~8.2.0",
+    "rxjs": "~6.4.0",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.9.1"
   },
-  "homepage": "https://github.com/isthisstackoverflow/talabheim#readme",
   "devDependencies": {
-    "eslint": "^6.1.0",
-    "eslint-config-standard": "^13.0.1",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^9.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "parcel": "^1.12.3",
-    "rimraf": "^2.6.3"
+    "@angular-devkit/build-angular": "~0.802.1",
+    "@angular/cli": "~8.2.1",
+    "@angular/compiler-cli": "~8.2.0",
+    "@angular/language-service": "~8.2.0",
+    "@types/node": "~8.9.4",
+    "@types/jasmine": "~3.3.8",
+    "@types/jasminewd2": "~2.0.3",
+    "codelyzer": "^5.0.0",
+    "jasmine-core": "~3.4.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.1.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-jasmine": "~2.0.1",
+    "karma-jasmine-html-reporter": "^1.4.0",
+    "protractor": "~5.4.0",
+    "ts-node": "~7.0.0",
+    "tslint": "~5.15.0",
+    "typescript": "~3.5.3"
   }
 }

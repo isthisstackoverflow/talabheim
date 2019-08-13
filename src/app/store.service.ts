@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, initialState, Status, Class } from './app.definitions';
+import { State, initialState, Status, Class, Partisan } from './app.definitions';
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +34,8 @@ export class StoreService {
     }, ...this.state.partisani];
   }
 
-  removePartisan(partisan) {
-    this.state.partisani = this.state.partisani.filter(p => p !== partisan)
+  removePartisan(partisan: Partisan) {
+    this.state.partisani = this.state.partisani.filter(p => p !== partisan);
   }
 
   refreshPartisani() {

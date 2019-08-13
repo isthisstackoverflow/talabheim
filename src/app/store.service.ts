@@ -34,6 +34,10 @@ export class StoreService {
     }, ...this.state.partisani];
   }
 
+  removePartisan(partisan) {
+    this.state.partisani = this.state.partisani.filter(p => p !== partisan)
+  }
+
   refreshPartisani() {
     this.state.partisani.forEach(p =>
       p.status === Status.Used

@@ -47,11 +47,14 @@ export class StoreService {
   }
 
   log(text: string, author: string) {
-    this.state.logList.unshift({
+    if (!author) {
+      throw new Error('Logging without author is forbidden.');
+    }
+    this.state.logList = [{
       text,
       author,
       date: Date.now()
-    });
+    }, ...this.state.logList];
   }
 
   logState() {

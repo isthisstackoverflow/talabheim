@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { StoreService } from '../store.service';
 
 @Component({
   selector: 'app-log',
   templateUrl: './log.component.html',
   styleUrls: ['./log.component.sass']
 })
-export class LogComponent implements OnInit {
+export class LogComponent {
+  constructor(public storeService: StoreService) { }
 
-  constructor() { }
-
-  ngOnInit() {
+  log(logInput: HTMLInputElement) {
+    if (logInput.value) {
+      this.storeService.log(logInput.value, 'GM');
+      logInput.value = '';
+    }
   }
 
+  date(p: number) {
+    return new Date(p);
+  }
 }

@@ -13,6 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { StateButtonsComponent } from './state-buttons/state-buttons.component';
@@ -42,7 +43,8 @@ import { LogComponent } from './log/log.component';
     MatTabsModule,
     MatTableModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatCardModule
   ],
   exports: [],
   providers: [],

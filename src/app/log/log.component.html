@@ -1,1 +1,34 @@
-<p>log works!</p>
+<mat-card class="logger mat-elevation-z8">
+  <mat-card-content class="log-actions">
+    <mat-form-field class="log-entry">
+      <input #logInput matInput placeholder="Logeintrag" (keyup.enter)="log(logInput)"/>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      class="log-confirmer"
+      color="primary"
+      matTooltip="Logeintrag bestätigen"
+      (click)="log(logInput)"
+    >
+      <mat-icon>send</mat-icon>
+      Eintragen
+    </button>
+  </mat-card-content>
+</mat-card>
+
+<table mat-table [dataSource]="storeService.state.logList" class="mat-elevation-z8 table">
+  <ng-container matColumnDef="time">
+    <th mat-header-cell *matHeaderCellDef> Zeit </th>
+    <td mat-cell *matCellDef="let element"> {{date(element.date) | date:'yyyy-MM-dd HH:mm:ss'}} </td>
+  </ng-container>
+  <ng-container matColumnDef="author">
+    <th mat-header-cell *matHeaderCellDef> Autor </th>
+    <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+  </ng-container>
+  <ng-container matColumnDef="text">
+    <th mat-header-cell *matHeaderCellDef> Logeintrag </th>
+    <td mat-cell *matCellDef="let element"> {{element.text}} </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="['time', 'author', 'text']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['time', 'author', 'text'];"></tr>
+</table>

@@ -18,18 +18,18 @@
   <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
     <th mat-header-cell *matHeaderCellDef>{{columnToTitle[column] | uppercase}}</th>
     <td mat-cell *matCellDef="let element" [matTooltip]="element[column]">
-      {{element[column]}}
+      {{column === 'name' ? '(#' + element.id + ') ' : ''}}{{element[column]}}
     </td>
   </ng-container>
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
       <div class="partisan-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
         <mat-form-field class="partisan-detail-child">
-          <input matInput placeholder="Name" [(ngModel)]="element.name"/>
+          <input matInput placeholder="Name" [(ngModel)]="element.name" (blur)="logNameChange(element)"/>
         </mat-form-field>
         <mat-form-field class="partisan-detail-child">
           <mat-label>Klasse</mat-label>
-          <mat-select [(ngModel)]="element.class">
+          <mat-select [(ngModel)]="element.class" (selectionChange)="logClassChange(element)">
             <mat-option *ngFor="let c of keys(class)" [value]="class[c]">
               {{class[c]}}
             </mat-option>
@@ -37,14 +37,14 @@
         </mat-form-field>
         <mat-form-field class="partisan-detail-child">
           <mat-label>Status</mat-label>
-          <mat-select [(ngModel)]="element.status">
+          <mat-select [(ngModel)]="element.status" (selectionChange)="logStatusChange(element)">
             <mat-option *ngFor="let s of keys(status)" [value]="status[s]">
               {{status[s]}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="partisan-detail-child-full">
-          <textarea matInput placeholder="Anmerkungen" rows="5" [(ngModel)]="element.note"></textarea>
+          <textarea matInput placeholder="Anmerkungen" rows="5" [(ngModel)]="element.note" (blur)="logNoteChange(element)"></textarea>
         </mat-form-field>
         <button
           mat-raised-button
@@ -63,7 +63,7 @@
   <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
       class="partisan-row"
       [class.partisan-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element"
+      (click)="selectPartisan(expandedElement === element ? null : element)"
   >
   </tr>
   <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="partisan-detail-row"></tr>

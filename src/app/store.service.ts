@@ -30,13 +30,15 @@ export class StoreService {
   }
 
   addPartisan(source: string) {
-    this.state.partisani = [{
-      name: `Partisan #${this.state.idCounter++}`,
+    this.state.idCounter++;
+    this.state.partisani = [...this.state.partisani, {
+      id: this.state.idCounter,
+      name: `Partisan #${this.state.idCounter}`,
       note: '',
       class: Class.Militia,
       status: Status.Healthy
-    }, ...this.state.partisani];
-    this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter - 1})`, source);
+    }];
+    this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter})`, source);
   }
 
   removePartisan(partisan: Partisan, source: string) {
@@ -45,14 +47,18 @@ export class StoreService {
   }
 
   refreshPartisani(source: string) {
-    const names = [];
+    const partisans = [];
     this.state.partisani.forEach(p =>
       p.status === Status.Used || p.status === Status.Healing
-        ? names.push(p.name) && (p.status = Status.Healthy)
+        ? partisans.push(p) && (p.status = Status.Healthy)
         : null
     );
-    this.log(`Die Partisanen im Zustand 'Eingesetzt' und 'Wird geheilt' wurden auf 'Einsatzbereit' gestellt.
-              Betroffen: [${names.join(', ')}]`, source);
+    if (partisans.length) {
+      this.log(`Die Partisanen im Zustand 'Eingesetzt' oder 'Wird geheilt' wurden auf 'Einsatzbereit' gestellt.
+                Betroffen: [${partisans.map(p => `(#${p.id}) ${p.name}`).join(', ')}]`, source);
+    } else {
+      this.log('Es wurden keine Zustandsänderungen für Partisanen durchgeführt.', source);
+    }
   }
 
   log(text: string, source: string) {

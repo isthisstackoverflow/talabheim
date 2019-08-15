@@ -16,6 +16,7 @@ export enum Status {
 }
 
 export interface Partisan {
+  id: number;
   name: string;
   note: string;
   class: Class;
@@ -40,6 +41,7 @@ export const initialState: State = {
   day: 1,
   stock: 4,
   partisani: [{
+    id: 0,
     name: 'Hans Hasenfuß',
     note: 'riecht nach Fahnenflucht',
     class: Class.Militia,
@@ -50,5 +52,5 @@ export const initialState: State = {
     text: 'Spielbeginn',
     date: Date.now()
   }],
-  idCounter: 1
+  idCounter: 0
 };

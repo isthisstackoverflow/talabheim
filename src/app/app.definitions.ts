@@ -15,6 +15,23 @@ export enum Status {
   Dead = 'Gefallen'
 }
 
+export enum Mission {
+  Spying = 'Spionage',
+  Sabotage = 'Sabotage',
+  Assassination = 'Anschlag',
+  Liberation = 'Befreiung',
+  Supply = 'Versorgung',
+  Healing = 'Heilung'
+}
+
+export enum Difficulty {
+  Simple = 'Simpel',
+  Easy = 'Leicht',
+  Average = 'Mittel',
+  Hard = 'Schwer',
+  Evil = 'Übel'
+}
+
 export interface Partisan {
   id: number;
   name: string;

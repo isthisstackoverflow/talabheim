@@ -14,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { AppComponent } from './app.component';
 import { StateButtonsComponent } from './state-buttons/state-buttons.component';
@@ -44,7 +45,8 @@ import { LogComponent } from './log/log.component';
     MatTableModule,
     MatInputModule,
     MatSelectModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule
   ],
   exports: [],
   providers: [],

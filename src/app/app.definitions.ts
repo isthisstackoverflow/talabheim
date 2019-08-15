@@ -9,6 +9,7 @@ export enum Class {
 
 export enum Status {
   Healthy = 'Einsatzbereit',
+  Healing = 'Wird geheilt',
   Used = 'Eingesetzt',
   Injured = 'Verletzt',
   Dead = 'Gefallen'
@@ -22,7 +23,7 @@ export interface Partisan {
 }
 
 export interface LogEntry {
-  author: string;
+  source: string;
   text: string;
   date: number;
 }
@@ -45,7 +46,7 @@ export const initialState: State = {
     status: Status.Healthy
   }],
   logList: [{
-    author: 'System',
+    source: 'System',
     text: 'Spielbeginn',
     date: Date.now()
   }],

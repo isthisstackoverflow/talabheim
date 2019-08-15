@@ -9,66 +9,66 @@ export class StoreService {
 
   constructor() {}
 
-  addStock() {
+  addStock(source: string) {
     this.state.stock += 1;
+    this.log(`Vorräte erhöht auf ${this.state.stock}.`, source);
   }
 
-  removeStock() {
+  removeStock(source: string) {
     this.state.stock = this.state.stock > 1 ? this.state.stock - 1 : 0;
+    this.log(`Vorräte gesenkt auf ${this.state.stock}.`, source);
   }
 
-  addDay() {
+  addDay(source: string) {
     this.state.day += 1;
+    this.log(`Tag hochgestellt auf ${this.state.day}.`, source);
   }
 
-  removeDay() {
+  removeDay(source: string) {
     this.state.day = this.state.day > 1 ? this.state.day - 1 : 0;
+    this.log(`Tag runtergestellt auf ${this.state.day}.`, source);
   }
 
-  addPartisan() {
+  addPartisan(source: string) {
     this.state.partisani = [{
       name: `Partisan #${this.state.idCounter++}`,
       note: '',
       class: Class.Militia,
       status: Status.Healthy
     }, ...this.state.partisani];
+    this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter - 1})`, source);
   }
 
-  removePartisan(partisan: Partisan) {
+  removePartisan(partisan: Partisan, source: string) {
     this.state.partisani = this.state.partisani.filter(p => p !== partisan);
+    this.log(`Partisanen gelöscht. (${JSON.stringify(partisan)})`, source);
   }
 
-  refreshPartisani() {
+  refreshPartisani(source: string) {
+    const names = [];
     this.state.partisani.forEach(p =>
-      p.status === Status.Used
-        ? p.status = Status.Healthy
+      p.status === Status.Used || p.status === Status.Healing
+        ? names.push(p.name) && (p.status = Status.Healthy)
         : null
     );
+    this.log(`Die Partisanen im Zustand 'Eingesetzt' und 'Wird geheilt' wurden auf 'Einsatzbereit' gestellt.
+              Betroffen: [${names.join(', ')}]`, source);
   }
 
-  log(text: string, author: string) {
-    if (!author) {
-      throw new Error('Logging without author is forbidden.');
+  log(text: string, source: string) {
+    if (source) {
+      this.state.logList = [{
+        text,
+        source,
+        date: Date.now()
+      }, ...this.state.logList];
     }
-    this.state.logList = [{
-      text,
-      author,
-      date: Date.now()
-    }, ...this.state.logList];
   }
 
-  logState() {
-    this.log(
-      `Beginn des Tages ${this.state.day}.
-      Es ${this.state.stock === 1 ? 'verbleibt 1 Vorrat' : `verbleiben ${this.state.stock} Vorräte`}.
-      `, 'System'
-    );
-  }
-
-  nextDay() {
-    this.addDay();
-    this.removeStock();
-    this.refreshPartisani();
-    this.logState();
+  nextDay(source: string) {
+    this.log('Tageswechsel ☀️', source);
+    this.addDay('System');
+    this.removeStock('System');
+    this.refreshPartisani('System');
   }
 }

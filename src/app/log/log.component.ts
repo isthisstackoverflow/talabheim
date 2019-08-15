@@ -11,7 +11,7 @@ export class LogComponent {
 
   log(logInput: HTMLInputElement) {
     if (logInput.value) {
-      this.storeService.log(logInput.value, 'GM');
+      this.storeService.log(logInput.value, 'Spielleiter (händisch)');
       logInput.value = '';
     }
   }

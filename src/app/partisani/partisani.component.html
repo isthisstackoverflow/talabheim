@@ -3,7 +3,7 @@
   class="spaced"
   color="primary"
   matTooltip="Neuen Partisanen erstellen"
-  (click)="storeService.addPartisan()"
+  (click)="storeService.addPartisan('Spielleiter')"
 >
   <mat-icon>person_add</mat-icon>
   Hinzufügen
@@ -51,7 +51,7 @@
           class="spaaaaaced"
           color="warn"
           matTooltip="Partisanen permanent löschen"
-          (click)="storeService.removePartisan(element)"
+          (click)="storeService.removePartisan(element, 'Spielleiter')"
         >
           <mat-icon>delete_forever</mat-icon>
           Permanent löschen

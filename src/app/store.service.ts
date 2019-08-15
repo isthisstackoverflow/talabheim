@@ -14,8 +14,8 @@ export class StoreService {
     this.log(`Vorräte erhöht auf ${this.state.stock}.`, source);
   }
 
-  removeStock(source: string) {
-    this.state.stock = this.state.stock > 1 ? this.state.stock - 1 : 0;
+  removeStock(source: string, amount: number = 1) {
+    this.state.stock = this.state.stock > amount ? this.state.stock - amount : 0;
     this.log(`Vorräte gesenkt auf ${this.state.stock}.`, source);
   }
 
@@ -74,7 +74,7 @@ export class StoreService {
   nextDay(source: string) {
     this.log('Tageswechsel ☀️', source);
     this.addDay('System');
-    this.removeStock('System');
+    this.removeStock('System', Math.ceil(this.state.partisani.length / 10));
     this.refreshPartisani('System');
   }
 }

@@ -1,6 +1,6 @@
 <mat-card class="missions mat-elevation-z8">
   <mat-card-content class="missions-content">
-    <label id="mission-choice" class="chapter-label">Auswahl der Missionsart</label>
+    <label id="mission-choice" class="chapter-label">Mission planen & durchführen</label>
     <mat-radio-group aria-labelledby="mission-choice" [value]="chosenMission" (change)="chooseMission($event.value)">
       <mat-radio-button class="mission-radio" *ngFor="let m of keys(mission)" [value]="m">
         {{mission[m]}}
@@ -76,4 +76,11 @@
       Mission ausführen
     </button>
   </mat-card-actions>
+</mat-card>
+
+<mat-card class="missions mat-elevation-z8">
+  <mat-card-content class="missions-content">
+    <label id="mission-result" class="chapter-label">Ergebnis der letzten Mission</label>
+    <app-throw-dice></app-throw-dice>
+  </mat-card-content>
 </mat-card>

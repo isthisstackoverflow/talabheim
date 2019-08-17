@@ -23,6 +23,7 @@ export class MissionComponent implements DoCheck {
   chosenPartisani: Partisan[] = [];
   chosenPartisaniToHeal: Partisan[] = [];
 
+  lastThrown = 0;
   probability = 0;
   disableExecution = true;
   disableOptimization = true;
@@ -76,7 +77,7 @@ export class MissionComponent implements DoCheck {
 
     this.disableExecution =
       this.chosenMission === null ||
-      this.storeService.state.stock > 0 ||
+      this.storeService.state.stock === 0 ||
       this.probability <= 0 ||
       this.chosenPartisani.length === 0 ||
       (this.choseMissionWithDifficulty() && this.chosenDifficulty === null) ||
@@ -143,7 +144,7 @@ export class MissionComponent implements DoCheck {
       return;
     }
     if (this.choseMissionWithDifficulty()) {
-      targetValue += difficultyModifier.get(Difficulty[this.chosenDifficulty]);
+      targetValue -= difficultyModifier.get(Difficulty[this.chosenDifficulty]);
     }
     // use fitting experts
     availablePartisani.forEach(p => {
@@ -188,18 +189,32 @@ export class MissionComponent implements DoCheck {
   }
 
   performMission() {
+    this.storeService.removeStock('System');
     const thrownValue = this.throwDice();
+    this.lastThrown = thrownValue;
+    this.chosenPartisani.forEach(p => p.status = Status.Used);
     if (thrownValue <= this.probability) {
       // success
-      this.chosenPartisani.forEach(p => p.status = Status.Used);
+      this.storeService.log(
+        `${Mission[this.chosenMission]} durch ${this.storeService.prettyPartisans(this.chosenPartisani)} erfolgreich durchgeführt. ✔️
+        Es wurde ${thrownValue} auf ${this.probability} geworfen.`,
+        'System'
+      );
       if (Mission[this.chosenMission] === Mission.Healing) {
         this.chosenPartisaniToHeal.forEach(p => p.status = Status.Healing);
-        // TODO log / display
+        this.storeService.log(
+          `Geheilt und nächste Runde einsatzbereit ist/sind: ${this.chosenPartisaniToHeal.map(p => p.name).join(', ')}`,
+          'System'
+        );
+        // TODO display
       } else if (Mission[this.chosenMission] === Mission.Supply) {
         const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
-        console.log(sides);
         const supply = this.throwDice(sides);
-        // TODO log / display
+        this.storeService.log(
+          `Mit einem d${sides} ${supply === 1 ? 'wurde 1 Vorrat' : `wurden ${supply} Vorräte`} erwürfelt.`,
+          'System'
+        );
+        // TODO display
         this.storeService.addStock('System', supply);
       } else if (Mission[this.chosenMission] === Mission.Liberation) {
         const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
@@ -207,13 +222,17 @@ export class MissionComponent implements DoCheck {
         const classes = Array(dudes)
           .fill(Class.Militia)
           .map(x => this.throwDice(10) === 1 ? this.getRandomSpecialistClass() : x);
-        // TODO log / display
+        this.storeService.log(
+          `Mit einem d${sides} wurde(n) ${dudes} Partisan(en) der folgenden Klasse(n) erwürfelt: [${classes.join(', ')}].`,
+          'System'
+        );
+        // TODO display
         classes.forEach(c => {
           this.storeService.addPartisan('System', c);
         });
       } else {
         // Spying, Sabotage, Assassionation
-        // TODO log / display
+        // TODO display
       }
     } else {
       // failure
@@ -221,15 +240,27 @@ export class MissionComponent implements DoCheck {
       const affectedPartisani =
         shuffle(this.chosenPartisani)
         .slice(0, affected);
+      const hurt = [];
+      const died = [];
       affectedPartisani.forEach(partisan => {
         const thrown = this.throwDice();
         if (thrown > 75) {
           partisan.status = Status.Dead;
+          died.push(partisan);
         } else {
           partisan.status = Status.Injured;
+          hurt.push(partisan);
         }
       });
-      // TODO log/dislay
+      this.storeService.log(
+        `${Mission[this.chosenMission]} durch ${this.storeService.prettyPartisans(this.chosenPartisani)} durchgeführt und fehlgeschlagen. ❌
+        Es wurde ${thrownValue} auf ${this.probability} geworfen.
+        ${affected} Partisan(en) trägt/tragen die Konsequenzen.
+        Verletzt: ${this.storeService.prettyPartisans(hurt)};
+        Verstorben: ${this.storeService.prettyPartisans(died)}`,
+        'System'
+      );
+      // TODO display
     }
     this.reset();
   }

@@ -46,6 +46,10 @@ export class StoreService {
     this.log(`Partisanen gelöscht. (${JSON.stringify(partisan)})`, source);
   }
 
+  prettyPartisans(partisans: Partisan[]) {
+    return `[${partisans.map(p => `(#${p.id}) ${p.name}`).join(', ')}]`;
+  }
+
   refreshPartisani(source: string) {
     const partisans = [];
     this.state.partisani.forEach(p =>
@@ -55,7 +59,7 @@ export class StoreService {
     );
     if (partisans.length) {
       this.log(`Die Partisanen im Zustand 'Eingesetzt' oder 'Wird geheilt' wurden auf 'Einsatzbereit' gestellt.
-                Betroffen: [${partisans.map(p => `(#${p.id}) ${p.name}`).join(', ')}]`, source);
+                Betroffen: ${this.prettyPartisans(partisans)}`, source);
     } else {
       this.log('Es wurden keine Zustandsänderungen für Partisanen durchgeführt.', source);
     }

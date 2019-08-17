@@ -14,25 +14,46 @@
         </mat-radio-button>
       </mat-radio-group>
     </ng-container>
-    <label class="chapter-label" id="mission-participants-choice">Auswahl der Einheiten</label>
-    <mat-form-field>
-      <mat-select
-        aria-labelledby="mission-participants-choice"
-        [value]="chosenPartisani"
-        (selectionChange)="choosePartisani($event.value)"
-        multiple
-      >
-        <mat-optgroup *ngFor="let c of keys(class)" [label]="class[c]">
-          <ng-container *ngFor="let partisan of storeService.state.partisani">
-            <mat-option
-              *ngIf="partisan.class === class[c]"
-              [value]="partisan"
-              [disabled]="partisan.status !== status.Healthy"
-            >{{partisan.name}} ({{partisan.status}})</mat-option>
-          </ng-container>
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
+    <div class="selects">
+      <mat-form-field>
+        <mat-label>Auswahl der Einheiten</mat-label>
+        <mat-select
+          aria-labelledby="mission-participants-choice"
+          [value]="chosenPartisani"
+          (selectionChange)="choosePartisani($event.value)"
+          multiple
+        >
+          <mat-optgroup *ngFor="let c of keys(class)" [label]="class[c]">
+            <ng-container *ngFor="let partisan of storeService.state.partisani">
+              <mat-option
+                *ngIf="partisan.class === class[c]"
+                [value]="partisan"
+                [disabled]="partisan.status !== status.Healthy"
+              >{{partisan.name}} ({{partisan.status}})</mat-option>
+            </ng-container>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="mission[chosenMission] === mission.Healing">
+        <mat-label>Auswahl der Verletzten</mat-label>
+        <mat-select
+          aria-labelledby="mission-participants-healed-choice"
+          [value]="chosenPartisaniToHeal"
+          (selectionChange)="chooseHealPartisani($event.value)"
+          multiple
+        >
+          <mat-optgroup *ngFor="let c of keys(class)" [label]="class[c]">
+            <ng-container *ngFor="let partisan of storeService.state.partisani">
+              <mat-option
+                *ngIf="partisan.class === class[c]"
+                [value]="partisan"
+                [disabled]="partisan.status !== status.Injured"
+              >{{partisan.name}} ({{partisan.status}})</mat-option>
+            </ng-container>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <span>Erfolgswahrscheinlichkeit: {{probability}}%</span>
   </mat-card-content>
   <mat-card-actions>

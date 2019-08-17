@@ -5,6 +5,6 @@
 
 # Talabheim
 
-This is a tool to manage the units of a custom ruleset for the Warhammer Fantasy roleplaying game. It is probably useless to you.
+This is a tool to manage the units of a custom ruleset for the Warhammer Fantasy roleplaying game. It is probably useless to you and probably won't work well on mobile devices.
 
 [GitHub Page](https://isthisstackoverflow.github.io/talabheim/).

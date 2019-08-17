@@ -32,6 +32,31 @@ export enum Difficulty {
   Evil = 'Übel'
 }
 
+export const missionTypeBonus = new Map([
+  [Mission.Healing, Class.Priest],
+  [Mission.Spying, Class.KnightOfTheVerdantField],
+  [Mission.Sabotage, Class.Technicus],
+  [Mission.Assassination, Class.Knight],
+  [Mission.Liberation, Class.Priest],
+  [Mission.Supply, Class.Looter]
+]);
+
+export const difficultyModifier = new Map([
+  [Difficulty.Simple, 20],
+  [Difficulty.Easy, 10],
+  [Difficulty.Average, 0],
+  [Difficulty.Hard, -10],
+  [Difficulty.Evil, -20]
+]);
+
+export const difficultyDice = new Map([
+  [Difficulty.Simple, 4],
+  [Difficulty.Easy, 6],
+  [Difficulty.Average, 8],
+  [Difficulty.Hard, 10],
+  [Difficulty.Evil, 12]
+]);
+
 export interface Partisan {
   id: number;
   name: string;

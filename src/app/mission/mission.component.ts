@@ -1,45 +1,154 @@
-import { Component } from '@angular/core';
+import { Component, DoCheck } from '@angular/core';
 import { StoreService } from '../store.service';
-import { Mission, Difficulty, Class } from '../app.definitions';
+import {
+  Mission, Difficulty, Class, Status, Partisan,
+  difficultyDice, difficultyModifier, missionTypeBonus
+} from '../app.definitions';
 
 @Component({
   selector: 'app-mission',
   templateUrl: './mission.component.html',
   styleUrls: ['./mission.component.sass']
 })
-export class MissionComponent {
+export class MissionComponent implements DoCheck {
   mission = Mission;
   difficulty = Difficulty;
+  status = Status;
   class = Class;
   keys = Object.keys;
 
-  chosenMission: Mission | null;
-  chosenDifficulty: Difficulty | null;
+  chosenMission: Mission | null = null;
+  chosenDifficulty: Difficulty | null = null;
+  chosenPartisani: Partisan[] = [];
+
+  probability = 0;
+  disableExecution = true;
+  disableOptimization = true;
 
   constructor(public storeService: StoreService) {}
+
+  ngDoCheck() {
+    const next = this.chosenPartisani.filter(p => p.status === Status.Healthy);
+    this.chosenPartisani = next;
+    this.update();
+  }
+
+  partisanFitsMission(p: Partisan) {
+    return missionTypeBonus.get(Mission[this.chosenMission]) === p.class;
+  }
+
+  choseMissionWithDifficulty() {
+    return Mission[this.chosenMission] === Mission.Liberation || Mission[this.chosenMission] === Mission.Supply;
+  }
 
   throwDice(d: number = 100) {
     return Math.floor(Math.random() * d) + 1;
   }
 
+  update() {
+    let probability = 0;
+    let militiaCount = 0;
+    if (this.choseMissionWithDifficulty()) {
+      probability += difficultyModifier.get(Difficulty[this.chosenDifficulty]) || 0;
+    }
+    this.chosenPartisani.forEach(partisan => {
+      if (Mission[this.chosenMission] === Mission.Healing) {
+        probability += partisan.class === Class.Priest ? 100 : 0;
+      } else if (partisan.class === Class.Militia) {
+        probability += militiaCount++ < 5 ? 10 : 5;
+      } else {
+        probability += this.partisanFitsMission(partisan)
+          ? 20
+          : 10;
+      }
+    });
+    this.probability = probability;
+
+    this.disableExecution =
+      this.chosenMission === null ||
+      this.probability <= 0 ||
+      this.chosenPartisani.length === 0 ||
+      (this.choseMissionWithDifficulty() && this.chosenDifficulty === null);
+
+    this.disableOptimization =
+      this.chosenMission === null ||
+      (this.choseMissionWithDifficulty() && this.chosenDifficulty === null);
+  }
+
+  chooseMission(mission: Mission) {
+    this.chosenMission = mission;
+    this.update();
+  }
+
+  chooseDifficulty(difficulty: Difficulty) {
+    this.chosenDifficulty = difficulty;
+    this.update();
+  }
+
+  choosePartisani(partisani: Partisan[]) {
+    this.chosenPartisani = partisani;
+    this.update();
+  }
+
   optimize() {
-    // Milizionär	+10% bis 5 Milizionäre, danach 5%
-    // Ritter des saftgrünen Feldes	+20% auf Spionagemissionen
-    // Technicus	+20% auf Sabotagemissionen
-    // Ritter	+20% auf Anschläge
-    // Priester	+20% auf Befreiungsmissionen
-    // Plünderer	+20% auf Versorgungstoure
+    let availablePartisani = this.storeService.state.partisani.filter(p => p.status === Status.Healthy);
+    let chosenPartisani = [];
+    let currentValue = 0;
+    let militiaCount = 0;
+    let targetValue = 100;
+    // handle healing separately (differing rules)
+    if (Mission[this.chosenMission] === Mission.Healing) {
+      availablePartisani.forEach(p => {
+        if (currentValue < targetValue && p.class === Class.Priest) {
+          chosenPartisani.push(p);
+          currentValue += 100;
+        }
+      });
+      this.chosenPartisani = chosenPartisani;
+      this.update();
+      return;
+    }
+    if (this.choseMissionWithDifficulty()) {
+      targetValue += difficultyModifier.get(Difficulty[this.chosenDifficulty]);
+    }
+    // use fitting experts
+    availablePartisani.forEach(p => {
+      if (currentValue < targetValue && this.partisanFitsMission(p)) {
+        chosenPartisani.push(p);
+        currentValue += 20;
+      }
+    });
+    availablePartisani = availablePartisani.filter(p => !chosenPartisani.includes(p));
+    // fill militia
+    availablePartisani.forEach(p => {
+      if (currentValue < targetValue && p.class === Class.Militia) {
+        chosenPartisani.push(p);
+        currentValue += militiaCount++ < 5 ? 10 : 5;
+      }
+    });
+    availablePartisani = availablePartisani.filter(p => !chosenPartisani.includes(p));
+    // fill other experts
+    availablePartisani.forEach(p => {
+      if (currentValue < targetValue) {
+        chosenPartisani.push(p);
+        currentValue += 10;
+      }
+    });
+    // remove unnecessary militia (may have surplus 5% after adding "other experts")
+    if (currentValue > targetValue) {
+      const firstMilitia = chosenPartisani.find(p => p.class === Class.Militia);
+      chosenPartisani = chosenPartisani.filter(p => p !== firstMilitia);
+    }
+    this.chosenPartisani = chosenPartisani;
+    this.update();
   }
 
   performMission() {
+    console.log(this.probability);
     // Spionage/Sabotage/Anschlag/Befreiung/Versorgung/Heilung
-
-    // Befreiung/Versorgung:
-    // Schwierigkeit	simpel	leicht	mittel	schwer	übel
-    // Modifikator	+20%	+10%	0	-10%	-20%
-    // Würfelwurf	W4	W6	W8	W10	W12
-
-    // Bei Befreiung: Jeder Partisan hat 10% Chance zufälliger Spezialist zu sein
+    // mark chosen partisani used
+    // Versorgung: throw dice according to difficulty
+    // Befreiung: throw dice to select dudes (10% chance for random specialist)
   }
 
   performFailure() {

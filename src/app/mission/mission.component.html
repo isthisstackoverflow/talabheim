@@ -1,26 +1,58 @@
 <mat-card class="missions mat-elevation-z8">
   <mat-card-content class="missions-content">
     <label id="mission-choice" class="chapter-label">Auswahl der Missionsart</label>
-    <mat-radio-group aria-labelledby="mission-choice" [(ngModel)]="chosenMission">
+    <mat-radio-group aria-labelledby="mission-choice" (change)="chooseMission($event.value)">
       <mat-radio-button class="mission-radio" *ngFor="let m of keys(mission)" [value]="m">
         {{mission[m]}}
       </mat-radio-button>
     </mat-radio-group>
-    <ng-container *ngIf="mission[chosenMission] === mission.Liberation || mission[chosenMission] === mission.Supply">
+    <ng-container *ngIf="choseMissionWithDifficulty()">
       <label id="mission-difficulty-choice" class="chapter-label">Auswahl des Schwierigkeitsgrades</label>
-      <mat-radio-group aria-labelledby="mission-difficulty-choice" [(ngModel)]="chosenDifficulty">
+      <mat-radio-group aria-labelledby="mission-difficulty-choice" (change)="chooseDifficulty($event.value)">
         <mat-radio-button class="mission-radio" *ngFor="let d of keys(difficulty)" [value]="d">
           {{difficulty[d]}}
         </mat-radio-button>
       </mat-radio-group>
     </ng-container>
-    <!-- TODO fiiiiix
+    <label class="chapter-label" id="mission-participants-choice">Auswahl der Einheiten</label>
     <mat-form-field>
-      <mat-label class="chapter-label">Auswahl der Einheiten</mat-label>
-      <mat-select [formControl]="toppings" multiple>
-        <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+      <mat-select
+        aria-labelledby="mission-participants-choice"
+        [value]="chosenPartisani"
+        (selectionChange)="choosePartisani($event.value)"
+        multiple
+      >
+        <mat-optgroup *ngFor="let c of keys(class)" [label]="class[c]">
+          <ng-container *ngFor="let partisan of storeService.state.partisani">
+            <mat-option
+              *ngIf="partisan.class === class[c]"
+              [value]="partisan"
+              [disabled]="partisan.status !== status.Healthy"
+            >{{partisan.name}} ({{partisan.status}})</mat-option>
+          </ng-container>
+        </mat-optgroup>
       </mat-select>
     </mat-form-field>
-    -->
+    <span>Erfolgswahrscheinlichkeit: {{probability}}%</span>
   </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="disableOptimization"
+      (click)="optimize()"
+    >
+      <mat-icon>build</mat-icon>
+      Automatisch optimieren
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="disableExecution"
+      (click)="performMission()"
+    >
+      <mat-icon>play_arrow</mat-icon>
+      Mission ausführen
+    </button>
+  </mat-card-actions>
 </mat-card>

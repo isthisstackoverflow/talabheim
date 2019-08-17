@@ -1,14 +1,14 @@
 <mat-card class="missions mat-elevation-z8">
   <mat-card-content class="missions-content">
     <label id="mission-choice" class="chapter-label">Auswahl der Missionsart</label>
-    <mat-radio-group aria-labelledby="mission-choice" (change)="chooseMission($event.value)">
+    <mat-radio-group aria-labelledby="mission-choice" [value]="chosenMission" (change)="chooseMission($event.value)">
       <mat-radio-button class="mission-radio" *ngFor="let m of keys(mission)" [value]="m">
         {{mission[m]}}
       </mat-radio-button>
     </mat-radio-group>
     <ng-container *ngIf="choseMissionWithDifficulty()">
       <label id="mission-difficulty-choice" class="chapter-label">Auswahl des Schwierigkeitsgrades</label>
-      <mat-radio-group aria-labelledby="mission-difficulty-choice" (change)="chooseDifficulty($event.value)">
+      <mat-radio-group aria-labelledby="mission-difficulty-choice" [value]="chosenDifficulty" (change)="chooseDifficulty($event.value)">
         <mat-radio-button class="mission-radio" *ngFor="let d of keys(difficulty)" [value]="d">
           {{difficulty[d]}}
         </mat-radio-button>

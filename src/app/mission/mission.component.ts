@@ -30,8 +30,8 @@ export class MissionComponent implements DoCheck {
   constructor(public storeService: StoreService) {}
 
   ngDoCheck() {
-    const next = this.chosenPartisani.filter(p => p.status === Status.Healthy);
-    this.chosenPartisani = next;
+    this.chosenPartisani = this.chosenPartisani.filter(p => p.status === Status.Healthy);
+    this.chosenPartisaniToHeal = this.chosenPartisaniToHeal.filter(p => p.status === Status.Injured);
     this.update();
   }
 
@@ -48,7 +48,11 @@ export class MissionComponent implements DoCheck {
   }
 
   reset() {
-    // TODO reset form completely
+    this.chosenMission = null;
+    this.chosenDifficulty = null;
+    this.chosenPartisani = [];
+    this.chosenPartisaniToHeal = [];
+    this.update();
   }
 
   update() {
@@ -72,6 +76,7 @@ export class MissionComponent implements DoCheck {
 
     this.disableExecution =
       this.chosenMission === null ||
+      this.storeService.state.stock > 0 ||
       this.probability <= 0 ||
       this.chosenPartisani.length === 0 ||
       (this.choseMissionWithDifficulty() && this.chosenDifficulty === null) ||
@@ -172,23 +177,44 @@ export class MissionComponent implements DoCheck {
     this.update();
   }
 
+  getRandomSpecialistClass() {
+    return shuffle([
+      Class.Knight,
+      Class.KnightOfTheVerdantField,
+      Class.Looter,
+      Class.Priest,
+      Class.Technicus
+    ])[0];
+  }
+
   performMission() {
     const thrownValue = this.throwDice();
     if (thrownValue <= this.probability) {
       // success
-      // TODO mark chosen partisani used
+      this.chosenPartisani.forEach(p => p.status = Status.Used);
       if (Mission[this.chosenMission] === Mission.Healing) {
-        // mark healed as being healed
+        this.chosenPartisaniToHeal.forEach(p => p.status = Status.Healing);
+        // TODO log / display
       } else if (Mission[this.chosenMission] === Mission.Supply) {
-        // Versorgung: throw dice according to difficulty
-        // difficultyDice
+        const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
+        console.log(sides);
+        const supply = this.throwDice(sides);
+        // TODO log / display
+        this.storeService.addStock('System', supply);
       } else if (Mission[this.chosenMission] === Mission.Liberation) {
-        // difficultyDice
-        // Befreiung: throw dice to select dudes (10% chance for random specialist)
+        const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
+        const dudes = this.throwDice(sides);
+        const classes = Array(dudes)
+          .fill(Class.Militia)
+          .map(x => this.throwDice(10) === 1 ? this.getRandomSpecialistClass() : x);
+        // TODO log / display
+        classes.forEach(c => {
+          this.storeService.addPartisan('System', c);
+        });
       } else {
         // Spying, Sabotage, Assassionation
+        // TODO log / display
       }
-      // TODO show some kind of modal
     } else {
       // failure
       const affected = this.throwDice(this.chosenPartisani.length);
@@ -203,6 +229,8 @@ export class MissionComponent implements DoCheck {
           partisan.status = Status.Injured;
         }
       });
+      // TODO log/dislay
     }
+    this.reset();
   }
 }

@@ -9,8 +9,8 @@ export class StoreService {
 
   constructor() {}
 
-  addStock(source: string) {
-    this.state.stock += 1;
+  addStock(source: string, amount: number = 1) {
+    this.state.stock += amount;
     this.log(`Vorräte erhöht auf ${this.state.stock}.`, source);
   }
 
@@ -29,16 +29,16 @@ export class StoreService {
     this.log(`Tag runtergestellt auf ${this.state.day}.`, source);
   }
 
-  addPartisan(source: string) {
+  addPartisan(source: string, c: Class = Class.Militia) {
     this.state.idCounter++;
     this.state.partisani = [...this.state.partisani, {
       id: this.state.idCounter,
       name: `Partisan #${this.state.idCounter}`,
       note: '',
-      class: Class.Militia,
+      class: c,
       status: Status.Healthy
     }];
-    this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter})`, source);
+    this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter}, ${c})`, source);
   }
 
   removePartisan(partisan: Partisan, source: string) {

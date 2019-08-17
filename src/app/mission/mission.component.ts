@@ -1,3 +1,4 @@
+import shuffle from 'lodash.shuffle';
 import { Component, DoCheck } from '@angular/core';
 import { StoreService } from '../store.service';
 import {
@@ -44,6 +45,10 @@ export class MissionComponent implements DoCheck {
 
   throwDice(d: number = 100) {
     return Math.floor(Math.random() * d) + 1;
+  }
+
+  reset() {
+    // TODO reset form completely
   }
 
   update() {
@@ -168,23 +173,36 @@ export class MissionComponent implements DoCheck {
   }
 
   performMission() {
-    alert('TODO');
-    console.log(this.probability);
-    // Spionage/Sabotage/Anschlag/Befreiung/Versorgung/Heilung
-    // mark chosen partisani used
-    // Versorgung: throw dice according to difficulty
-    // Befreiung: throw dice to select dudes (10% chance for random specialist)
-  }
-
-  performFailure() {
-    alert('TODO');
-    // Fehlschlag:
-    // Wx Mitstreiter, wobei x die Größe der Gruppe ist, abgerundet auf die gängigen Würfel W4, 6, 8, 10, 12, 20,
-    // müssen die Konsequenzen tragen.
-    // Um   zu ermitteln ob ein Spezialist erwischt wurde wird für jeden betroffenen Mitstreiter ein W100 geworfen und mit
-    // 100-(Spezialisten/Mitstreiter)*100 verglichen. Der Wüfelwurf wird nach Ausscheiden eines Spezialisten nicht angepasst.
-    // Es wird immer mit der Startzusammenstellung verglichen.
-    // Für jeden betroffenen Mitstreiter wird ein W100 geworfen, bei einer 76+ wurde der Mitstreiter erschlagen,
-    // bei einer 0-75 ist er ausgeschaltet
+    const thrownValue = this.throwDice();
+    if (thrownValue <= this.probability) {
+      // success
+      // TODO mark chosen partisani used
+      if (Mission[this.chosenMission] === Mission.Healing) {
+        // mark healed as being healed
+      } else if (Mission[this.chosenMission] === Mission.Supply) {
+        // Versorgung: throw dice according to difficulty
+        // difficultyDice
+      } else if (Mission[this.chosenMission] === Mission.Liberation) {
+        // difficultyDice
+        // Befreiung: throw dice to select dudes (10% chance for random specialist)
+      } else {
+        // Spying, Sabotage, Assassionation
+      }
+      // TODO show some kind of modal
+    } else {
+      // failure
+      const affected = this.throwDice(this.chosenPartisani.length);
+      const affectedPartisani =
+        shuffle(this.chosenPartisani)
+        .slice(0, affected);
+      affectedPartisani.forEach(partisan => {
+        const thrown = this.throwDice();
+        if (thrown > 75) {
+          partisan.status = Status.Dead;
+        } else {
+          partisan.status = Status.Injured;
+        }
+      });
+    }
   }
 }

@@ -78,9 +78,16 @@
   </mat-card-actions>
 </mat-card>
 
-<mat-card class="missions mat-elevation-z8">
+<mat-card *ngIf="lastResultThrown !== null" class="missions mat-elevation-z8">
   <mat-card-content class="missions-content">
     <label id="mission-result" class="chapter-label">Ergebnis der letzten Mission</label>
-    <app-throw-dice></app-throw-dice>
+    <ul>
+      <li>Missionstyp: {{lastResultMissionType}}</li>
+      <li [class]="lastResultThrown <= lastResultPercentage ? 'success' : 'failure'">Wurf: {{lastResultThrown}} auf {{lastResultPercentage}}</li>
+      <li *ngIf="lastResultDice !== null">Folgewurf: {{lastResultDiceThrown}} mit d{{lastResultDice}}</li>
+      <li *ngIf="lastResultClasses !== null">Erwürfelte Klassen: {{lastResultClasses}}</li>
+      <li *ngIf="lastResultHurt !== null">Verletzt: {{lastResultHurt}}</li>
+      <li *ngIf="lastResultDied !== null">Gefallen: {{lastResultDied}}</li>
+    </ul>
   </mat-card-content>
 </mat-card>

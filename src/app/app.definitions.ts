@@ -82,13 +82,7 @@ export interface State {
 export const initialState: State = {
   day: 1,
   stock: 4,
-  partisani: [{
-    id: 0,
-    name: 'Hans Hasenfuß',
-    note: 'riecht nach Fahnenflucht',
-    class: Class.Militia,
-    status: Status.Healthy
-  }],
+  partisani: [],
   logList: [{
     source: 'System',
     text: 'Spielbeginn',

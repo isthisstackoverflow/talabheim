@@ -28,6 +28,16 @@ export class MissionComponent implements DoCheck {
   disableExecution = true;
   disableOptimization = true;
 
+  lastResultPercentage = null;
+  lastResultThrown = null;
+  lastResultBy = null;
+  lastResultDice = null;
+  lastResultDiceThrown = null;
+  lastResultMissionType = null;
+  lastResultClasses = null;
+  lastResultHurt = null;
+  lastResultDied = null;
+
   constructor(public storeService: StoreService) {}
 
   ngDoCheck() {
@@ -189,8 +199,17 @@ export class MissionComponent implements DoCheck {
   }
 
   performMission() {
+    this.lastResultPercentage = this.probability;
+    this.lastResultMissionType = Mission[this.chosenMission];
+    this.lastResultDice = null;
+    this.lastResultDiceThrown = null;
+    this.lastResultClasses = null;
+    this.lastResultHurt = null;
+    this.lastResultDied = null;
+
     this.storeService.removeStock('System');
     const thrownValue = this.throwDice();
+    this.lastResultThrown = thrownValue;
     this.lastThrown = thrownValue;
     this.chosenPartisani.forEach(p => p.status = Status.Used);
     if (thrownValue <= this.probability) {
@@ -206,7 +225,6 @@ export class MissionComponent implements DoCheck {
           `Geheilt und nächste Runde einsatzbereit ist/sind: ${this.chosenPartisaniToHeal.map(p => p.name).join(', ')}`,
           'System'
         );
-        // TODO display
       } else if (Mission[this.chosenMission] === Mission.Supply) {
         const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
         const supply = this.throwDice(sides);
@@ -214,7 +232,8 @@ export class MissionComponent implements DoCheck {
           `Mit einem d${sides} ${supply === 1 ? 'wurde 1 Vorrat' : `wurden ${supply} Vorräte`} erwürfelt.`,
           'System'
         );
-        // TODO display
+        this.lastResultDice = sides;
+        this.lastResultDiceThrown = supply;
         this.storeService.addStock('System', supply);
       } else if (Mission[this.chosenMission] === Mission.Liberation) {
         const sides = difficultyDice.get(Difficulty[this.chosenDifficulty]);
@@ -226,13 +245,15 @@ export class MissionComponent implements DoCheck {
           `Mit einem d${sides} wurde(n) ${dudes} Partisan(en) der folgenden Klasse(n) erwürfelt: [${classes.join(', ')}].`,
           'System'
         );
-        // TODO display
+        this.lastResultDice = sides;
+        this.lastResultDiceThrown = dudes;
+        this.lastResultClasses = classes.join(', ');
         classes.forEach(c => {
           this.storeService.addPartisan('System', c);
         });
       } else {
         // Spying, Sabotage, Assassionation
-        // TODO display
+        // nothing
       }
     } else {
       // failure
@@ -260,7 +281,10 @@ export class MissionComponent implements DoCheck {
         Verstorben: ${this.storeService.prettyPartisans(died)}`,
         'System'
       );
-      // TODO display
+      this.lastResultDice = this.chosenPartisani.length;
+      this.lastResultDiceThrown = affected;
+      this.lastResultHurt = this.storeService.prettyPartisans(hurt);
+      this.lastResultDied = this.storeService.prettyPartisans(died);
     }
     this.reset();
   }

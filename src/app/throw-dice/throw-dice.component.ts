@@ -26,7 +26,8 @@ export class ThrowDiceComponent implements OnInit {
   ngOnInit() {
     const screenWidth = 500;
     const screenHeight = 200;
-    const viewAngle = 45;
+
+    const viewAngle = 90;
     const aspect = screenWidth / screenHeight;
     const near = 0.1;
     const far = 20000;
@@ -37,14 +38,6 @@ export class ThrowDiceComponent implements OnInit {
     this.camera.position.set(0, 30, 30);
     this.camera.rotation.x = -0.95;
 
-    // this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    // this.stats = new THREE.Stats();
-    // this.stats.domElement.style.position = 'absolute';
-    // this.stats.domElement.style.bottom = '0px';
-    // this.stats.domElement.style.zIndex = 100;
-    // this.container.appendChild(this.stats.domElement);
-    const ambient = new THREE.AmbientLight('#ffffff', 0.3);
-
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(screenWidth, screenHeight);
     this.renderer.shadowMap.enabled = true;
@@ -53,18 +46,11 @@ export class ThrowDiceComponent implements OnInit {
     this.container = this.threeDiv.nativeElement;
     this.container.appendChild(this.renderer.domElement);
 
-    const light = new THREE.PointLight(0xCCCCCC, 0.8);
-    light.position.set(0, 30, 30);
-
     const floorMaterial = new THREE.MeshPhongMaterial({ color: '#FEFEFE', side: THREE.DoubleSide });
-    const floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+    const floorGeometry = new THREE.PlaneGeometry(200, 200, 10, 10);
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.position.y = -0.5;
     floor.rotation.x = Math.PI / 2;
-
-    const skyBoxGeometry = new THREE.BoxGeometry(10000, 10000, 10000);
-    const skyBoxMaterial = new THREE.MeshPhongMaterial({ color: 0x9999ff, side: THREE.BackSide });
-    const skyBox = new THREE.Mesh(skyBoxGeometry, skyBoxMaterial);
 
     this.world = new CANNON.World();
     this.world.gravity.set(0, 0, -9.8 * 800);
@@ -75,20 +61,24 @@ export class ThrowDiceComponent implements OnInit {
     dice10.getObject().position.x = 0;
     dice10.getObject().position.y = 0;
     dice10.getObject().position.z = 0;
-    this.dice = [dice10];
-
-    const floorBody = new CANNON.Body({mass: 0, shape: new CANNON.Plane(), material: DICE.DiceManager.floorBodyMaterial});
-    floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-    this.world.add(floorBody);
+    const dice100 = new DICE.DiceD10({size: 10});
+    dice100.getObject().position.x = 0;
+    dice100.getObject().position.y = 0;
+    dice100.getObject().position.z = 0;
+    this.dice = [dice10, dice100];
+    // const floorBody = new CANNON.Body({mass: 0, shape: new CANNON.Plane(), material: DICE.DiceManager.floorBodyMaterial});
+    // floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+    // this.world.add(floorBody);
 
     this.scene.add(this.camera);
-    this.scene.add(light);
-    this.scene.add(ambient);
+    this.scene.add(new THREE.AmbientLight('#FFFFFF', 1.0));
     this.scene.add(floor);
-    this.scene.add(skyBox);
-    this.scene.fog = new THREE.FogExp2(0x9999ff, 0.00025);
     this.scene.add(dice10.getObject());
+    this.scene.add(dice100.getObject());
+
     // this.randomDiceThrow();
+
+    requestAnimationFrame(this.animate.bind(this));
   }
 
   randomDiceThrow() {
@@ -113,6 +103,6 @@ export class ThrowDiceComponent implements OnInit {
     this.world.step(1.0 / 60.0);
     this.dice.forEach(d => d.updateMeshFromBody());
     this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.animate);
+    requestAnimationFrame(this.animate.bind(this));
   }
 }

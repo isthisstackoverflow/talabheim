@@ -22,7 +22,6 @@ import { OverviewComponent } from './overview/overview.component';
 import { PartisaniComponent } from './partisani/partisani.component';
 import { MissionComponent } from './mission/mission.component';
 import { LogComponent } from './log/log.component';
-import { ThrowDiceComponent } from './throw-dice/throw-dice.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +30,7 @@ import { ThrowDiceComponent } from './throw-dice/throw-dice.component';
     OverviewComponent,
     PartisaniComponent,
     MissionComponent,
-    LogComponent,
-    ThrowDiceComponent
+    LogComponent
   ],
   imports: [
     BrowserModule,

@@ -3,7 +3,6 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 
 import {StoreService} from '../store.service';
 import {Partisan, Class, Status} from '../app.definitions';
-import { format } from 'url';
 
 @Component({
   selector: 'app-partisani',

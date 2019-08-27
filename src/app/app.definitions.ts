@@ -65,6 +65,14 @@ export interface Partisan {
   status: Status;
 }
 
+export interface Group {
+  id: number;
+  name: string;
+  icon: string;
+  color: string;
+  partisani: Partisan[];
+}
+
 export interface LogEntry {
   source: string;
   text: string;
@@ -75,18 +83,22 @@ export interface State {
   day: number;
   stock: number;
   partisani: Partisan[];
+  groups: Group[];
   logList: LogEntry[];
   idCounter: number;
+  idCounterGroup: number;
 }
 
 export const initialState: State = {
   day: 1,
   stock: 4,
   partisani: [],
+  groups: [],
   logList: [{
     source: 'System',
     text: 'Spielbeginn',
     date: Date.now()
   }],
-  idCounter: 0
+  idCounter: 0,
+  idCounterGroup: 0
 };

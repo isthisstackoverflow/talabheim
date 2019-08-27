@@ -22,6 +22,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { PartisaniComponent } from './partisani/partisani.component';
 import { MissionComponent } from './mission/mission.component';
 import { LogComponent } from './log/log.component';
+import { GroupsComponent } from './groups/groups.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { LogComponent } from './log/log.component';
     OverviewComponent,
     PartisaniComponent,
     MissionComponent,
-    LogComponent
+    LogComponent,
+    GroupsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, initialState, Status, Class, Partisan } from './app.definitions';
+import { State, initialState, Status, Class, Partisan, Group } from './app.definitions';
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +33,25 @@ export class StoreService {
     this.state.idCounter++;
     this.state.partisani = [...this.state.partisani, {
       id: this.state.idCounter,
-      name: `Partisan #${this.state.idCounter}`,
+      name: `${c} #${this.state.idCounter}`,
       note: '',
       class: c,
       status: Status.Healthy
     }];
     this.log(`Neuen Partisanen erstellt. (#${this.state.idCounter}, ${c})`, source);
+  }
+
+  addGroup(source: string, g: Group = null) {
+    this.state.idCounterGroup++;
+    const addedGroup = g || {
+      id: this.state.idCounterGroup,
+      name: 'Gruppe',
+      icon: 'people',
+      color: 'black',
+      partisani: []
+    }
+    this.state.groups = [...this.state.groups, addedGroup]
+    this.log(`Neue Gruppe erstellt. (${addedGroup.id})`, source);
   }
 
   removePartisan(partisan: Partisan, source: string) {
@@ -65,6 +78,12 @@ export class StoreService {
     }
   }
 
+  removeFallenPartisani(source: string) {
+    this.state.partisani
+      .filter(p => p.status === Status.Dead)
+      .forEach(p => this.removePartisan(p, source))
+  }
+
   log(text: string, source: string) {
     if (source) {
       this.state.logList = [{
@@ -78,6 +97,7 @@ export class StoreService {
   nextDay(source: string) {
     this.log('Tageswechsel ☀️', source);
     this.addDay('System');
+    this.removeFallenPartisani('System');
     this.removeStock('System', Math.ceil(this.state.partisani.length / 10));
     this.refreshPartisani('System');
   }

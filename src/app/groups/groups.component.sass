@@ -1,0 +1,48 @@
+table
+  width: calc(100% - 2em)
+  margin: 1em
+  table-layout: fixed
+
+th, td
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+.spaced
+  margin: 1em 0 0 1em
+
+.spaaaaaced
+  margin: 1em 0 1em auto
+
+.aligner
+  display: flex
+  align-items: center
+  & span
+    margin-left: 1em
+
+tr.group-detail-row
+  height: 0
+
+tr.group-row:not(.group-expanded-row):hover
+  background: #777
+
+tr.group-row:not(.group-expanded-row):active
+  background: #efefef
+
+.group-row td
+  border-bottom-width: 0
+
+.group-detail
+  overflow: hidden
+  display: flex
+  flex-wrap: wrap
+  flex-direction: row
+  justify-content: space-around
+
+.group-detail-child
+  flex: 1 0 45%
+  margin: 0.5em
+
+.group-detail-child-full
+  width: 100%
+  margin: 0 0.5em

@@ -1,0 +1,75 @@
+<button
+  mat-raised-button
+  class="spaced"
+  color="primary"
+  matTooltip="Neue Gruppe erstellen"
+  (click)="storeService.addGroup('Spielleiter')"
+>
+  <mat-icon>people</mat-icon>
+  Hinzufügen
+</button>
+
+<table
+  mat-table
+  multiTemplateDataRows
+  [dataSource]="storeService.state.groups"
+  class="mat-elevation-z8"
+>
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef>{{columnToTitle[column] | uppercase}}</th>
+    <td mat-cell *matCellDef="let element" [matTooltip]="element[column]">
+      <div class="aligner">
+        <mat-icon [ngStyle]="{'color': element.color}" *ngIf="column === 'name'">{{element.icon}}</mat-icon>
+        <span *ngIf="column !== 'partisani'; else elseBlock">{{element[column]}}</span>
+        <ng-template #elseBlock><span>{{printPartisani(element[column])}}</span></ng-template>
+      </div>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="group-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <mat-form-field class="group-detail-child">
+          <input matInput placeholder="Name" [(ngModel)]="element.name" (blur)="logNameChange(element)"/>
+        </mat-form-field>
+        <mat-form-field class="group-detail-child">
+          <mat-label>Auswahl der Einheiten</mat-label>
+          <mat-select
+            [(ngModel)]="element.partisani"
+            multiple
+          >
+            <ng-container *ngFor="let partisan of storeService.state.partisani">
+              <mat-option
+                [value]="partisan"
+                [disabled]="isPartisanDisabled(partisan)"
+              >{{partisan.name}} ({{partisan.class}})</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="group-detail-child">
+          <input matInput placeholder="Hier folgt die Auswahl des Gruppen-Icons"/>
+        </mat-form-field>
+        <mat-form-field class="group-detail-child">
+          <input matInput placeholder="Hier folgt die Auswahl der Gruppen-Farbe"/>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          class="spaaaaaced"
+          color="warn"
+          matTooltip="Gruppe auflösen"
+          (click)="storeService.removeGroup(element, 'Spielleiter')"
+        >
+          <mat-icon>delete_forever</mat-icon>
+          Permanent löschen
+        </button>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay;"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="group-row"
+      [class.group-expanded-row]="expandedElement === element"
+      (click)="selectGroup(expandedElement === element ? null : element)"
+  >
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="group-detail-row"></tr>
+</table>

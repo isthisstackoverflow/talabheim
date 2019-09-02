@@ -54,6 +54,16 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <label id="group-choice" class="chapter-label">Einheiten auf Gruppe setzen</label>
+    <div class="group-buttons" aria-labelledby="group-choice">
+      <button *ngFor="let group of storeService.state.groups"
+        mat-button
+        (click)="chooseGroup(group)"
+      >
+        <mat-icon [ngStyle]="{'color': group.color}">{{group.icon}}</mat-icon>
+        {{group.name}} setzen
+      </button>
+    </div>
     <span>Erfolgswahrscheinlichkeit: {{probability}}%</span>
   </mat-card-content>
   <mat-card-actions>
@@ -74,6 +84,15 @@
     >
       <mat-icon>play_arrow</mat-icon>
       Mission ausführen
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="reset()"
+      [ngStyle]="{'margin': 0}"
+    >
+      <mat-icon>clear</mat-icon>
+      Auswahl zurücksetzen
     </button>
   </mat-card-actions>
 </mat-card>

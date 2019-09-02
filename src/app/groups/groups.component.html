@@ -36,27 +36,34 @@
           <mat-select
             [(ngModel)]="element.partisani"
             multiple
+            (selectionChange)="logMemberChange(element)"
           >
             <ng-container *ngFor="let partisan of storeService.state.partisani">
               <mat-option
-                [value]="partisan"
+                [value]="partisan.id"
                 [disabled]="isPartisanDisabled(partisan)"
               >{{partisan.name}} ({{partisan.class}})</mat-option>
             </ng-container>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="group-detail-child">
-          <input matInput placeholder="Hier folgt die Auswahl des Gruppen-Icons"/>
+          <mat-label>Auswahl der Gruppenfarbe</mat-label>
+          <input matInput type="color" [(ngModel)]="element.color" (blur)="logColorChange(element)"/>
         </mat-form-field>
         <mat-form-field class="group-detail-child">
-          <input matInput placeholder="Hier folgt die Auswahl der Gruppen-Farbe"/>
+          <mat-label>Auswahl des Gruppensymbols</mat-label>
+          <mat-select [(ngModel)]="element.icon" (selectionChange)="logIconChange(element)">
+            <ng-container *ngFor="let option of options">
+              <mat-option [value]="option"><span><mat-icon>{{option}}</mat-icon> {{option}}</span></mat-option>
+            </ng-container>
+          </mat-select>
         </mat-form-field>
         <button
           mat-raised-button
           class="spaaaaaced"
           color="warn"
           matTooltip="Gruppe auflösen"
-          (click)="storeService.removeGroup(element, 'Spielleiter')"
+          (click)="storeService.removeGroup('Spielleiter', element)"
         >
           <mat-icon>delete_forever</mat-icon>
           Permanent löschen

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, initialState, Status, Class, Partisan, Group } from './app.definitions';
+import getRandomName from './getRandomName';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class StoreService {
     this.state.idCounter++;
     this.state.partisani = [...this.state.partisani, {
       id: this.state.idCounter,
-      name: `${c} #${this.state.idCounter}`,
+      name: getRandomName(),
       note: '',
       class: c,
       status: Status.Healthy
@@ -45,17 +46,26 @@ export class StoreService {
     this.state.idCounterGroup++;
     const addedGroup = g || {
       id: this.state.idCounterGroup,
-      name: 'Gruppe',
+      name: `Gruppe ${this.state.idCounterGroup}`,
       icon: 'people',
       color: 'black',
       partisani: []
     }
-    this.state.groups = [...this.state.groups, addedGroup]
+    this.state.groups = [...this.state.groups, addedGroup];
     this.log(`Neue Gruppe erstellt. (${addedGroup.id})`, source);
+  }
+
+  removeGroup(source: string, group: Group) {
+    this.state.groups = this.state.groups.filter(g => g !== group);
+    this.log(`Gruppe ${group.name} gelöscht.`, source);
   }
 
   removePartisan(partisan: Partisan, source: string) {
     this.state.partisani = this.state.partisani.filter(p => p !== partisan);
+    this.state.groups = this.state.groups.map(g => ({
+      ...g,
+      partisani: g.partisani.filter(p => p !== partisan.id)
+    }));
     this.log(`Partisanen gelöscht. (${JSON.stringify(partisan)})`, source);
   }
 
@@ -81,7 +91,7 @@ export class StoreService {
   removeFallenPartisani(source: string) {
     this.state.partisani
       .filter(p => p.status === Status.Dead)
-      .forEach(p => this.removePartisan(p, source))
+      .forEach(p => this.removePartisan(p, source));
   }
 
   log(text: string, source: string) {

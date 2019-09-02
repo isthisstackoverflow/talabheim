@@ -27,6 +27,14 @@ export class GroupsComponent {
     partisani: 'Mitglieder'
   };
   expandedElement: Group | null;
+  options = [
+    'account_balance', 'build', 'people', 'all_out',
+    'bug_report', 'eco', 'group_work', 'label',
+    'label_important', 'pan_tool', 'visibility', 'security',
+    'colorize', 'brightness_2', 'brightness_5', 'filter_vintage',
+    'nature', 'directions_run', 'restaurant', 'restaurant_menu',
+    'whatshot', 'star'
+  ];
 
   constructor(public storeService: StoreService) {}
 
@@ -43,7 +51,7 @@ export class GroupsComponent {
   }
 
   isPartisanDisabled(partisan: Partisan): boolean {
-    return this.storeService.state.groups.filter(g => g.partisani.includes(partisan)).length > 0
+    return this.storeService.state.groups.filter(g => g.partisani.includes(partisan.id)).length > 0;
   }
 
   logIconChange(group: Group) {
@@ -55,10 +63,11 @@ export class GroupsComponent {
   }
 
   logMemberChange(group: Group) {
-    this.storeService.log(`Partisanen von Gruppe ${group.name} auf "${group.partisani}" geändert.`, 'Spielleiter');
+    this.storeService.log(`Partisanen von Gruppe "${group.name}" auf
+      "${group.partisani.map(id => this.storeService.state.partisani.find(p => p.id === id).name).join(', ')}" geändert.`, 'Spielleiter');
   }
 
   printPartisani(partisani: Partisan[]): string {
-    return partisani.map(p => p.name).join(', ')
+    return partisani.map(p => p.name).join(', ');
   }
 }

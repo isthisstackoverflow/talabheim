@@ -2,7 +2,7 @@ import shuffle from 'lodash.shuffle';
 import { Component, DoCheck } from '@angular/core';
 import { StoreService } from '../store.service';
 import {
-  Mission, Difficulty, Class, Status, Partisan,
+  Mission, Difficulty, Class, Status, Partisan, Group,
   difficultyDice, difficultyModifier, missionTypeBonus
 } from '../app.definitions';
 
@@ -120,6 +120,13 @@ export class MissionComponent implements DoCheck {
 
   chooseHealPartisani(partisani: Partisan[]) {
     this.chosenPartisaniToHeal = partisani;
+    this.update();
+  }
+
+  chooseGroup(group: Group) {
+    this.chosenPartisani = group.partisani
+      .map(id => this.storeService.state.partisani.find(p => p.id === id))
+      .filter(p => p.status === Status.Healthy);
     this.update();
   }
 

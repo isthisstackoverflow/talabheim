@@ -70,7 +70,7 @@ export interface Group {
   name: string;
   icon: string;
   color: string;
-  partisani: Partisan[];
+  partisani: number[];
 }
 
 export interface LogEntry {

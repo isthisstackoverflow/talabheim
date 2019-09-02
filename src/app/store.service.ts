@@ -50,7 +50,7 @@ export class StoreService {
       icon: 'people',
       color: 'black',
       partisani: []
-    }
+    };
     this.state.groups = [...this.state.groups, addedGroup];
     this.log(`Neue Gruppe erstellt. (${addedGroup.id})`, source);
   }
